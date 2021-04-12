@@ -39,8 +39,14 @@ class RedisSetup(paella.Setup):
     def macos(self):
         self.install("openssl")
 
+    def archlinux(self):
+        self.install("gcc gcc-libs make openssl")
+
     def common_last(self):
-        self.install("dirmngr gnupg patch pkg-config")
+        if not self.platform.is_arch_compat:
+            self.install("dirmngr gnupg patch pkg-config")
+        else:
+            self.install("patch pkg-config")
 
 #----------------------------------------------------------------------------------------------
 
