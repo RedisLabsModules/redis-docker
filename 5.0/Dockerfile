@@ -28,6 +28,7 @@ ADD deps/ /build/deps/
 ADD 5.0/system-setup.py /build/
 
 # ENV REDIS_DEPENDS "ca-certificates dirmngr gnupg wget gcc libc6-dev make"
+RUN /build/deps/readies/bin/getbash
 RUN /build/deps/readies/bin/getpy3
 RUN /build/system-setup.py
 RUN gcc --version
@@ -61,7 +62,7 @@ RUN set -ex ;\
 	patch -p1 -i redis-5.0.patch
 
 # For future reference, we modify this directly in the source instead of just supplying a default
-# configuration flag because apparently "if you specify any argument to redis-server, 
+# configuration flag because apparently "if you specify any argument to redis-server,
 # [it assumes] you are going to specify everything".
 # See also https://github.com/docker-library/redis/issues/4#issuecomment-50780840
 # (more exactly, this makes sure the default behavior of "save on SIGTERM" stays functional by default)
@@ -83,7 +84,7 @@ ARG UID
 RUN echo "Building redisfab/redis-${ARCH}-${OSNICK}:${REDIS_VER} UID=${UID}"
 RUN uname -a; cat /etc/os-release
 
-# Add our user and group first to make sure their IDs get assigned consistently, 
+# Add our user and group first to make sure their IDs get assigned consistently,
 # regardless of whatever dependencies get added
 RUN groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis
 

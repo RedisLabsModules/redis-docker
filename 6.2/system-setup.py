@@ -43,7 +43,7 @@ class RedisSetup(paella.Setup):
         self.install("gcc gcc-libs make openssl")
 
     def alpine(self):
-        self.install("gcc make openssl-devel libatomic")
+        self.install("gcc make openssl libatomic")
 
     def common_last(self):
         if self.dist == 'arch':
