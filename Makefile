@@ -113,6 +113,7 @@ UID.fedora=989
 UID.fedora33=989
 UID.fedora34=989
 UID.rhel7.4=800
+UID.archlinux=888
 ifeq ($(UID.$(OSNICK)),)
 UID=999
 else
