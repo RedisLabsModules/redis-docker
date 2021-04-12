@@ -121,7 +121,7 @@ workflows:
       - build-x64:
           matrix:
             parameters:
-              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster] # hirsute
+              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster, alpine, alpineedge, fedora, fedora33, fedora34, archlinux] # hirsute
       - build-arm8:
           matrix:
             parameters:
