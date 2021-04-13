@@ -14,6 +14,8 @@ ARG ARCH=x64
 
 ARG UID=999
 
+ARG JEMALLOC=yes
+
 #----------------------------------------------------------------------------------------------
 FROM ${OS} as builder
 
@@ -22,6 +24,7 @@ ARG REDIS_MAJOR
 ARG OS
 ARG OSNICK
 ARG ARCH
+ARG JEMALLOC
 RUN echo "Building Redis v${REDIS_VER} on ${OSNICK} (${OS}) for ${ARCH}"
 RUN uname -a; cat /etc/os-release
 
@@ -48,6 +51,7 @@ ENV REDIS_VERSION ${REDIS_VER}
 ENV REDIS_DOWNLOAD_URL https://github.com/redis/redis/archive/${REDIS_VER}.tar.gz
 # ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-${REDIS_VER}.tar.gz
 ENV REDIS_DOWNLOAD_SHA dc2bdcf81c620e9f09cfd12e85d3bc631c897b2db7a55218fd8a65eaa37f86dd
+ENV JEMALLOC ${JEMALLOC}
 
 # for redis-sentinel see: http://redis.io/topics/sentinel
 RUN set -ex; \
@@ -64,7 +68,7 @@ RUN set -ex; \
 		source /opt/rh/devtoolset-9/enable ;\
 	fi ;\
 	export BUILD_TLS=yes; \
-	ARCH= make V=1 -C /usr/src/redis -j $(nproc) all; \
+	ARCH= make REDIS_CFLAGS=-DUSE_JEMALLOC=${JEMALLOC} V=1 -C /usr/src/redis -j $(nproc) all; \
 	make -C /usr/src/redis install
 
 #----------------------------------------------------------------------------------------------
@@ -81,13 +85,24 @@ RUN uname -a; cat /etc/os-release
 
 # Add our user and group first to make sure their IDs get assigned consistently,
 # regardless of whatever dependencies get added
-RUN groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis
+#RUN groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis
+RUN set -xe; \
+    if [ -e /sbin/groupadd ]; then\
+        groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis ;\
+    else\
+        addgroup -g ${UID} redis && adduser -S -u ${UID} redis ;\
+    fi
 
-COPY ${REDIS_MAJOR}/platforms/setup.${OSNICK} /usr/local/bin/docker-setup
-RUN set -xe ;\
-    chmod +x /usr/local/bin/docker-setup ;\
-    /usr/local/bin/docker-setup ;\
-    rm /usr/local/bin/docker-setup
+
+COPY 6.2/platforms/setup.${OSNICK} /usr/local/bin/docker-setup
+RUN chmod +x /usr/local/bin/docker-setup
+RUN /usr/local/bin/docker-setup
+RUN rm /usr/local/bin/docker-setup
+#RUN set -xe ;\
+#    chmod +x /usr/local/bin/docker-setup ;\
+#    /usr/local/bin/docker-setup ;\
+#    rm /usr/local/bin/docker-setup
+
 
 COPY --from=builder /usr/local/ /usr/local/
 

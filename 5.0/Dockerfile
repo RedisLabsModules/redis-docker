@@ -86,13 +86,18 @@ RUN uname -a; cat /etc/os-release
 
 # Add our user and group first to make sure their IDs get assigned consistently,
 # regardless of whatever dependencies get added
-RUN groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis
+RUN set -xe; \
+    if [ -e /sbin/groupadd ]; then\
+        groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis ;\
+    else\
+        addgroup -g ${UID} redis && adduser -S -u ${UID} redis ;\
+    fi
+
 
 COPY 5.0/platforms/setup.${OSNICK} /usr/local/bin/docker-setup
-RUN set -xe ;\
-	chmod +x /usr/local/bin/docker-setup ;\
-	/usr/local/bin/docker-setup ;\
-	rm /usr/local/bin/docker-setup
+RUN chmod +x /usr/local/bin/docker-setup
+RUN /usr/local/bin/docker-setup
+RUN rm /usr/local/bin/docker-setup
 
 COPY --from=builder /usr/local/ /usr/local/
 

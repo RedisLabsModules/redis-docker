@@ -109,15 +109,23 @@ endif
 
 UID.centos7=997
 UID.centos8=996
-UID.fedora=989
-UID.fedora33=989
-UID.fedora34=989
+UID.alpine=1000
 UID.rhel7.4=800
 UID.archlinux=888
 ifeq ($(UID.$(OSNICK)),)
 UID=999
 else
 UID=$(UID.$(OSNICK))
+endif
+
+
+#----------------------------------------------------------------------------------------------
+
+REPLACE_JEMALLOC_IN=fedora33 fedora34 alpine alpineedge
+ifeq ($(findstring $(OS),$(REPLACE_JEMALLOC_IN)),)
+JEMALLOC=no
+else
+JEMALLOC=yes
 endif
 
 #----------------------------------------------------------------------------------------------
@@ -196,8 +204,8 @@ endif
 define build_native
 build_native:
 	@echo "Building $(STEM):$(VERSION)-$(ARCH)-$(OSNICK) ..."
-	@$(NOP) $(DOCKER) pull $(OS)
-	@$(NOP) $(DOCKER) build $(BUILD_OPT) -t $(STEM):$(VERSION)-$(ARCH)-$(OSNICK) -f $(MAJOR)/Dockerfile \
+	$(NOP) $(DOCKER) pull $(OS)
+	$(NOP) $(DOCKER) build $(BUILD_OPT) -t $(STEM):$(VERSION)-$(ARCH)-$(OSNICK) -f $(MAJOR)/Dockerfile \
 		$(CACHE_ARG) \
 		--build-arg ARCH=$(ARCH) \
 		--build-arg OS=$(OS) \
@@ -205,6 +213,7 @@ build_native:
 		--build-arg UID=$(UID) \
 		--build-arg REDIS_VER=$(VERSION) \
 		--build-arg REDIS_MAJOR=$(MAJOR) \
+		--build-arg JEMALLOC=$(JEMALLOC)
 		.
 	@$(NOP) $(DOCKER) tag $(STEM):$(VERSION)-$(ARCH)-$(OSNICK) $(STEM):$(MAJOR)-latest-$(ARCH)-$(OSNICK)
 
