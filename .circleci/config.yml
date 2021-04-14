@@ -101,12 +101,12 @@ workflows:
           <<: *on-any-branch
           matrix:
             parameters:
-              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster, alpine, alpineedge, archlinux] # hirsute
+              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster, alpine, alpineedge, fedora33, fedora34, archlinux] # hirsute
       - build-arm8:
           <<: *on-any-branch
           matrix:
             parameters:
-              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster, alpine, alpineedge] # hirsute
+              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster, alpine, alpineedge, fedora33, fedora34] # hirsute
 
   weekly:
     triggers:
