@@ -106,7 +106,7 @@ workflows:
           <<: *on-any-branch
           matrix:
             parameters:
-              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster] # hirsute
+              platform: [centos8, centos7, focal, bionic, xenial, trusty, bullseye, buster, alpine, alpineedge] # hirsute
 
   weekly:
     triggers:

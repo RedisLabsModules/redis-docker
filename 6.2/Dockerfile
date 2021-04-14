@@ -87,10 +87,10 @@ RUN uname -a; cat /etc/os-release
 # regardless of whatever dependencies get added
 #RUN groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis
 RUN set -xe; \
-    if [ -e /sbin/groupadd ]; then\
+    if [ -f /sbin/groupadd ] || [ -f /usr/sbin/groupadd ]; then\
         groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis ;\
     else\
-        addgroup -g ${UID} redis && adduser -S -u ${UID} redis ;\
+        addgroup --gid ${UID} redis && adduser --system --uid ${UID} redis ;\
     fi
 
 

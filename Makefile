@@ -109,7 +109,8 @@ endif
 
 UID.centos7=997
 UID.centos8=996
-UID.alpine=1000
+UID.alpine=777
+UID.alpineedge=777
 UID.rhel7.4=800
 UID.archlinux=888
 ifeq ($(UID.$(OSNICK)),)
@@ -121,7 +122,7 @@ endif
 
 #----------------------------------------------------------------------------------------------
 
-REPLACE_JEMALLOC_IN=fedora33 fedora34 alpine alpineedge
+REPLACE_JEMALLOC_IN=fedora33 fedora34 alpine alpineedge bullseye
 ifeq ($(findstring $(OS),$(REPLACE_JEMALLOC_IN)),)
 JEMALLOC=no
 else
