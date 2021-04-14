@@ -82,7 +82,7 @@ RUN set -xe; \
     if [ -f /sbin/groupadd ] || [ -f /usr/sbin/groupadd ]; then\
         groupadd -r -g ${UID} redis && useradd -r -g redis -u ${UID} redis ;\
     else\
-        addgroup --gid ${UID} redis && adduser --system -uid ${UID} redis ;\
+        addgroup --gid ${UID} redis && adduser --system --uid ${UID} redis ;\
     fi
 
 
