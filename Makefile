@@ -213,7 +213,7 @@ build_native:
 		--build-arg UID=$(UID) \
 		--build-arg REDIS_VER=$(VERSION) \
 		--build-arg REDIS_MAJOR=$(MAJOR) \
-		--build-arg JEMALLOC=$(JEMALLOC)
+		--build-arg JEMALLOC=$(JEMALLOC) \
 		.
 	@$(NOP) $(DOCKER) tag $(STEM):$(VERSION)-$(ARCH)-$(OSNICK) $(STEM):$(MAJOR)-latest-$(ARCH)-$(OSNICK)
 
