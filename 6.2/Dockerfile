@@ -36,6 +36,13 @@ ADD ${REDIS_MAJOR}/*.patch /build/
 ADD ${REDIS_MAJOR}/build-fix-* /build/
 
 # ENV REDIS_DEPENDS "ca-certificates dirmngr gnupg wget gcc libc6-dev make"
+
+# WORKAROUND for glibc 2.33 and old Docker
+# See https://github.com/actions/virtual-environments/issues/2658
+# Thanks to https://github.com/lxqt/lxqt-panel/pull/1562
+#RUN patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \
+#    curl -LO "https://repo.archlinuxcn.org/x86_64/$patched_glibc" && \
+#    bsdtar -C / -xvf "$patched_glibc"
 RUN /build/deps/readies/bin/getbash
 RUN /build/deps/readies/bin/getpy3
 RUN /build/system-setup.py
@@ -68,7 +75,7 @@ RUN set -ex; \
 		source /opt/rh/devtoolset-9/enable ;\
 	fi ;\
 	export BUILD_TLS=yes; \
-	ARCH= make REDIS_CFLAGS=-DUSE_JEMALLOC=${JEMALLOC} V=1 -C /usr/src/redis -j $(nproc) all; \
+	ARCH= make REDIS_CFLAGS=-DUSE_JEMALLOC=${JEMALLOC} V=1 -C /usr/src/redis all; \
 	make -C /usr/src/redis install
 
 #----------------------------------------------------------------------------------------------
